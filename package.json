@@ -1,0 +1,8 @@
+{
+  "name": "afwo-hair-design",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "rm -rf dist && mkdir -p dist && cp index.html dist/ && cp -r src public dist/ && cp manus-routes.json dist/manus-routes.json"
+  }
+}

@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="id" class="is-loading">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#151514" />
+    <meta name="description" content="Afwo Hair Design — salon rambut dengan potongan, warna, dan treatment yang dirancang untuk kamu." />
+    <title>Afwo Hair Design — Rambut baru. Energi baru.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="src/style.css" />
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Observer.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/DrawSVGPlugin.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.3.26/dist/lenis.min.js"></script>
+    <script defer src="src/main.js"></script>
+  </head>
+  <body>
+    <div class="pt is-boot" id="pt" aria-hidden="true">
+      <div class="pt-inner">
+        <span class="pt-mark">AFWO<i>.</i></span>
+        <span class="pt-meta"><span class="pt-label" id="pt-label">Memuat</span><span class="pt-count" id="pt-count">0</span></span>
+        <span class="pt-bar"><i id="pt-bar"></i></span>
+      </div>
+    </div>
+    <noscript><style>.pt{display:none!important}html.is-loading{overflow:auto!important}</style></noscript>
+    <a class="wa-fab" id="waFab" data-booking-link href="#" target="_blank" rel="noreferrer" aria-label="Booking lewat WhatsApp">
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      <span>Booking via WhatsApp</span>
+    </a>
+    <div class="site-shell">
+      <header class="site-header" id="top">
+        <nav class="navbar" aria-label="Navigasi utama">
+          <div class="nav-pill">
+            <a class="wordmark" href="#top" aria-label="Afwo Hair Design">AFWO<span class="wordmark-dot">.</span></a>
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-menu">
+              <span></span><span></span>
+              <span class="sr-only menu-label">Buka menu</span>
+            </button>
+            <div class="nav-wrap" id="primary-menu">
+              <div class="nav-links">
+                <span class="nav-lamp" aria-hidden="true"></span>
+                <a href="#top">Beranda</a>
+                <a href="#layanan">Layanan</a>
+                <a href="#gaya">Gaya Potong</a>
+                <a href="#galeri">Galeri</a>
+                <a href="#faq">FAQ</a>
+                <a href="#lokasi">Lokasi</a>
+              </div>
+              <a class="button button-small button-gold nav-cta" data-booking-link href="https://wa.me/628115139990?text=Halo%20Afwo%2C%20saya%20ingin%20booking%20konsultasi." target="_blank" rel="noreferrer">Booking <span>↗</span></a>
+            </div>
+            <span class="nav-progress" aria-hidden="true"><i></i></span>
+          </div>
+        </nav>
+      </header>
+
+      <main class="view" id="view-home">
+        <section class="hero section-dark" aria-labelledby="hero-title">
+          <div class="container hero-intro">
+            <p class="eyebrow eyebrow-light hero-eyebrow"><span>✦</span> Hairstyle &amp; Artistry Studio</p>
+            <h1 id="hero-title" class="hero-title">Buat rambutmu <em>bicara</em> lebih keras.</h1>
+            <div class="hero-bottomline">
+              <p class="hero-copy">Potongan presisi, warna personal, dan rasa percaya diri yang terlihat.<span class="hero-note"><b>Sistem booking.</b> Pilih gaya, kirim lewat WhatsApp, kami konfirmasi jadwalmu.</span></p>
+              <div class="hero-actions">
+                <a class="button button-gold" data-booking-link href="https://wa.me/6281234567890?text=Halo%20Afwo%2C%20saya%20ingin%20booking%20konsultasi." target="_blank" rel="noreferrer">Booking Sekarang <span>↗</span></a>
+                <a class="button button-ghost" href="#layanan">Lihat Layanan <span>↓</span></a>
+              </div>
+            </div>
+            <svg class="draw-line hero-draw-line" viewBox="0 0 220 12" aria-hidden="true"><path d="M1 6 C48 1, 80 11, 118 6 S185 1, 219 6" pathLength="1" /></svg>
+          </div>
+
+          <div class="container hero-popular-label reveal"><p class="eyebrow eyebrow-light"><span>✦</span> Paling Sering Dipilih</p></div>
+          <div class="container hero-gallery" id="terlaris" aria-label="Layanan yang paling sering dipilih di Afwo">
+            <article class="hero-card hero-card-tall reveal" data-mono="BC">
+              <img data-photo data-fallback="assets/foto/gaya/layered_color_Red_Burgundy_no_bleach.jpeg" src="assets/foto/basic-color.jpg" alt="Model dengan hasil Basic Color" />
+              <span class="image-tag">Warna Rambut</span>
+              <div class="card-caption"><strong>Basic Color</strong><span>Warna personal</span></div>
+            </article>
+            <article class="hero-card hero-card-square reveal" data-mono="PW">
+              <img data-photo data-fallback="assets/foto/gaya/Soft_layered_color_full_medium_brown_no_bleach.jpeg" src="assets/foto/potong-wanita.jpg" alt="Model dengan hasil potong rambut wanita" />
+              <span class="image-tag">Potong</span>
+              <div class="card-caption"><strong>Potong Wanita</strong><span>Potong presisi</span></div>
+            </article>
+            <article class="hero-card hero-card-short reveal" data-mono="KP">
+              <img data-photo data-fallback="assets/foto/gaya/long_bob_color_balaye_dark_ash_gray.jpeg" src="assets/foto/keratin-premium.jpg" alt="Model dengan hasil Keratin Premium" />
+              <span class="image-tag">Treatment Rambut</span>
+              <div class="card-caption"><strong>Keratin Premium</strong><span>Rambut berkilau</span></div>
+            </article>
+            <article class="hero-card hero-card-portrait reveal" data-mono="CS">
+              <img data-photo data-fallback="assets/foto/gaya/Full_layered_color_balayage_medium_Ash_brown.jpeg" src="assets/foto/cuci-catok-styling-blow.jpg" alt="Model dengan hasil styling dan blow" />
+              <span class="image-tag">Styling</span>
+              <div class="card-caption"><strong>Styling + Blow</strong><span>Rapi untuk momenmu</span></div>
+            </article>
+          </div>
+          <div class="hero-scroll"><span>Scroll untuk eksplor</span><i></i></div>
+        </section>
+
+        <section class="manifesto section-light" id="tentang" aria-labelledby="about-title">
+          <div class="container split-section">
+            <div class="split-copy reveal">
+              <p class="eyebrow"><span>✦</span> Cerita Kami</p>
+              <h2 id="about-title" class="split-title">Rambut bukan aksesori. Ia bagian dari <em>caramu hadir.</em></h2>
+              <p class="body-copy">Di Afwo, kami memadukan teknik yang presisi dengan intuisi personal. Setiap detail dirancang untuk membuat kamu merasa paling menjadi diri sendiri.</p>
+              <p class="body-copy">Tidak ada formula yang sama. Hanya potongan, warna, dan perawatan yang tepat untuk ritmemu.</p>
+              <a class="text-link" href="#booking">Kenali cara kami bekerja <span>↗</span></a>
+            </div>
+            <div class="about-visual reveal">
+              <!-- GANTI FOTO: ubah URL src dengan foto interior atau stylist Afwo -->
+              <img loading="lazy" decoding="async" src="assets/foto/gaya/Layer_Butterfly_Balayage.jpeg" alt="Interior Afwo Hair Design dengan model berambut balayage" style="object-position: 50% 30%" />
+              <span class="floating-note">Since 2020<br /><strong>Made with Style.</strong></span>
+            </div>
+          </div>
+        </section>
+
+        <section class="services section-cream" id="layanan" aria-labelledby="services-title">
+          <div class="container">
+            <div class="section-heading reveal">
+              <div><p class="eyebrow"><span>✦</span> Layanan Unggulan</p><h2 id="services-title" class="split-title">Pilihan yang paling <em>diminati.</em></h2></div>
+              <a class="button button-dark" href="#/layanan">Lihat Semua Layanan <span>→</span></a>
+            </div>
+          </div>
+          <div class="svx" id="svx">
+            <div class="svx-slider" id="svxSlider" aria-label="Layanan unggulan Afwo"><div class="svx-track" id="svxTrack"></div></div>
+            <div class="svx-controls"><button class="svx-arrow" id="svxPrev" type="button" aria-label="Layanan sebelumnya">←</button><p class="svx-hint">Geser atau klik layanan untuk melihat penjelasannya</p><button class="svx-arrow" id="svxNext" type="button" aria-label="Layanan berikutnya">→</button></div>
+          </div>
+        </section>
+
+        <section class="gaya section-light" id="gaya" aria-labelledby="gaya-title">
+          <div class="container">
+            <div class="section-heading reveal">
+              <div><p class="eyebrow"><span>✦</span> Gaya Potong</p><h2 id="gaya-title" class="split-title">Pilih gayamu dulu.<br /><em>Duduk belakangan.</em></h2></div>
+              <p class="heading-aside">Referensi gaya potong dan warna rambut wanita. Pilih sampai 3 gaya, lalu kirim ke stylist lewat WhatsApp sekaligus untuk booking.</p>
+            </div>
+            <div class="svc-filters gaya-filters" id="gayaFilters" role="group" aria-label="Filter gaya potong"></div>
+            <ul class="gaya-grid" id="gayaGrid" aria-live="polite"></ul>
+            <div class="gaya-more" id="gayaMoreWrap" hidden><p id="gayaMoreInfo"></p><button class="button button-dark" id="gayaMore" type="button">Tampilkan lebih banyak <span aria-hidden="true">↓</span></button></div>
+            <div class="gaya-tray" id="gayaTray" hidden>
+              <div class="gaya-tray-info"><p class="gaya-tray-label"><b id="gayaCount">0</b> dari 3 gaya dipilih</p><div class="gaya-chips" id="gayaChips"></div></div>
+              <div class="gaya-tray-actions"><button class="gaya-clear" id="gayaClear" type="button">Kosongkan</button><a class="button button-gold" id="gayaSend" data-booking-link target="_blank" rel="noreferrer" href="#">Booking dengan gaya ini <span>↗</span></a></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="impact section-dark" aria-labelledby="impact-title">
+          <div class="container">
+            <div class="impact-head reveal"><p class="eyebrow eyebrow-light"><span>✦</span> Impact yang Terlihat</p><h2 id="impact-title" class="split-title">Dibuat untuk terasa.<br /><em>Terlihat juga.</em></h2></div>
+            <div class="stats-grid">
+              <div class="stat reveal"><strong><span class="count" data-count="500">0</span><sup>+</sup></strong><p>Klien yang pulang<br />dengan senyum baru</p></div>
+              <div class="stat reveal"><strong><span class="count" data-count="10">0</span><sup>+</sup></strong><p>Tahun merawat<br />rambut dengan niat</p></div>
+              <div class="stat reveal"><strong><span class="count" data-count="6">0</span></strong><p>Stylist profesional<br />dengan gaya masing-masing</p></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="gallery section-cream" id="galeri" aria-labelledby="gallery-title">
+          <div class="container section-heading reveal">
+            <div><p class="eyebrow"><span>✦</span> Galeri Karya</p><h2 id="gallery-title" class="split-title">Hasil nyata.<br /><em>Bukan sekadar klaim.</em></h2></div>
+            <p class="heading-aside">Koleksi transformasi klien kami, berputar sendiri.</p>
+          </div>
+          <div class="gallery-carousel" aria-label="Galeri hasil karya Afwo, berputar otomatis">
+            <div class="gallery-track">
+              <div class="gallery-group">
+              <article class="gallery-card"><img loading="lazy" decoding="async" src="/assets/foto/gaya/Curtain_Bang_Balayage.jpeg" alt="Model dengan rambut panjang bergelombang" /><span class="image-tag">Fashion Color</span></article>
+              <article class="gallery-card"><img loading="lazy" decoding="async" src="/assets/foto/gaya/Layer_Butterfly_Balayage.jpeg" alt="Potret dengan rambut pendek bertekstur" /><span class="image-tag">Textured Layer</span></article>
+              <article class="gallery-card"><img loading="lazy" decoding="async" src="/assets/foto/gaya/Medium_Layer_Balayage.jpeg" alt="Stylist sedang menata rambut pelanggan" /><span class="image-tag">Perawatan</span></article>
+              <article class="gallery-card"><img loading="lazy" decoding="async" src="/assets/foto/gaya/Pixie_Cut.jpeg" alt="Potret dengan rambut hitam mengilap" /><span class="image-tag">Keratin Smooth</span></article>
+              <article class="gallery-card"><img loading="lazy" decoding="async" src="/assets/foto/gaya/Curtain_Bang_Balayage.jpeg" alt="Detail alat dan perawatan rambut di salon" /><span class="image-tag">Haircare</span></article>
+              <article class="gallery-card"><img loading="lazy" decoding="async" src="/assets/foto/gaya/Layer_Butterfly_Balayage.jpeg" alt="Potret styling rambut untuk acara spesial" /><span class="image-tag">Bridal Styling</span></article>
+              <article class="gallery-card"><img loading="lazy" decoding="async" src="/assets/foto/gaya/Medium_Layer_Balayage.jpeg" alt="Hasil styling rambut modern dan natural" /><span class="image-tag">Inspirasi</span></article>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="testi section-dark" id="ulasan" aria-labelledby="testi-title">
+          <div class="container">
+            <div class="testi-head reveal"><p class="eyebrow eyebrow-light"><span>✦</span> Kata Mereka</p><h2 id="testi-title" class="split-title">Yang sudah duduk di kursi kami<br /><em>bercerita.</em></h2></div>
+            <!-- CONTOH ULASAN: GANTI dengan ulasan asli klien (minta izin dulu sebelum memuat nama/foto). -->
+            <div class="testi-grid">
+              <figure class="testi-main reveal">
+                <blockquote>“Biasanya takut potong poni. Di sini dijelasin dulu sesuai bentuk wajahku, jadi hasilnya pas dan nggak ribet ditata tiap pagi.”</blockquote>
+                <figcaption><strong>Nadia R.</strong><span>Potong Poni</span></figcaption>
+              </figure>
+              <div class="testi-side">
+                <figure class="testi-item reveal">
+                  <blockquote>“Datang bawa foto referensi. Stylist-nya jujur bilang mana yang cocok dan mana yang perlu disesuaikan. Warnanya rata, rambut tetap lembut.”</blockquote>
+                  <figcaption><strong>Salsa M.</strong><span>Basic Color</span></figcaption>
+                </figure>
+                <figure class="testi-item reveal">
+                  <blockquote>“Booking lewat WhatsApp, datang sesuai jam, langsung dikerjakan. Nggak pakai nunggu lama.”</blockquote>
+                  <figcaption><strong>Dimas A.</strong><span>Potong Pria + Cuci + Blow</span></figcaption>
+                </figure>
+              </div>
+            </div>
+            <div class="testi-foot reveal">
+              <p>Lihat hasil dan ulasan klien lainnya:</p>
+              <div class="testi-links"><a class="text-link" data-reviews-link href="https://maps.app.goo.gl/qqGACZnpg8HkfvVJ6" target="_blank" rel="noreferrer">Ulasan di Google <span>↗</span></a><a class="text-link" href="https://www.instagram.com/afwohairdesign?exln=MWV3OW01cDNhZnBtNA==" target="_blank" rel="noreferrer">Hasil karya di Instagram <span>↗</span></a></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="faq section-light" id="faq" aria-labelledby="faq-title">
+          <div class="container faq-layout">
+            <div class="faq-intro reveal">
+              <p class="eyebrow"><span>✦</span> Cara Booking &amp; FAQ</p>
+              <h2 id="faq-title" class="split-title">Booking dulu,<br /><em>baru datang.</em></h2>
+              <p class="body-copy">Afwo melayani dengan sistem booking supaya stylist punya waktu penuh untukmu dan kamu tidak perlu menunggu.</p>
+              <ol class="steps">
+                <li><span class="steps-no">1</span><div><strong>Pilih layanan atau gaya</strong><p>Lihat layanan dan gaya potong di halaman ini.</p></div></li>
+                <li><span class="steps-no">2</span><div><strong>Kirim lewat WhatsApp</strong><p>Pesannya terisi otomatis, tinggal tambah hari dan jam yang kamu mau.</p></div></li>
+                <li><span class="steps-no">3</span><div><strong>Tunggu konfirmasi</strong><p>Kami balas dengan jadwal yang tersedia. Setelah sepakat, kamu tinggal datang.</p></div></li>
+              </ol>
+              <a class="button button-dark" data-booking-link href="#" target="_blank" rel="noreferrer">Booking via WhatsApp <span>↗</span></a>
+            </div>
+            <div class="faq-list reveal" id="faqList">
+              <details class="faq-item" name="faq" open><summary><span>Apakah harus booking dulu?</span><i aria-hidden="true"></i></summary><div class="faq-answer"><p>Ya. Kami bekerja dengan sistem booking, jadi mohon atur jadwal lewat WhatsApp sebelum datang. Tanpa booking, kami belum tentu punya stylist dan slot kosong saat kamu tiba.</p></div></details>
+              <details class="faq-item" name="faq"><summary><span>Bagaimana cara booking?</span><i aria-hidden="true"></i></summary><div class="faq-answer"><p>Klik tombol booking di mana saja di halaman ini, lalu kirim pesan yang sudah terisi otomatis. Sebutkan layanan, hari, dan jam yang kamu inginkan. Kami akan membalas dengan konfirmasi jadwal.</p></div></details>
+              <details class="faq-item" name="faq"><summary><span>Boleh bawa foto referensi?</span><i aria-hidden="true"></i></summary><div class="faq-answer"><p>Sangat boleh. Kamu bisa memilih gaya di bagian Gaya Potong, atau kirim foto sendiri lewat WhatsApp. Stylist akan menyesuaikannya dengan bentuk wajah dan kondisi rambutmu.</p></div></details>
+              <details class="faq-item" name="faq"><summary><span>Berapa biaya layanannya?</span><i aria-hidden="true"></i></summary><div class="faq-answer"><p>Biaya bergantung pada layanan dan kondisi rambut (panjang, tebal, dan riwayat pewarnaan). Tanyakan lewat WhatsApp, kami sampaikan sebelum jadwal dikonfirmasi.</p></div></details>
+              <details class="faq-item" name="faq"><summary><span>Bagaimana kalau perlu ganti jadwal?</span><i aria-hidden="true"></i></summary><div class="faq-answer"><p>Kabari kami lewat WhatsApp secepatnya agar slotmu bisa dijadwal ulang atau dipakai klien lain.</p></div></details>
+              <details class="faq-item" name="faq"><summary><span>Apakah bisa potong rambut anak?</span><i aria-hidden="true"></i></summary><div class="faq-answer"><p>Bisa. Kami punya layanan Potong Anak dengan pendekatan yang sabar. Tetap lewat booking, ya.</p></div></details>
+            </div>
+          </div>
+        </section>
+
+        <section class="lokasi section-cream" id="lokasi" aria-labelledby="lokasi-title">
+          <div class="container lokasi-layout">
+            <div class="lokasi-info reveal">
+              <p class="eyebrow"><span>✦</span> Lokasi &amp; Jam Buka</p>
+              <h2 id="lokasi-title" class="split-title">Datang setelah<br /><em>jadwalmu pasti.</em></h2>
+              <div class="lokasi-map reveal">
+                <div class="map-wrap" aria-label="Peta lokasi salon">
+                  <!-- Lokasi salon Afwo Hairdesign — ganti src kalau mau pake embed maps lain -->
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3982.9777794612696!2d114.63855840000001!3d-3.3555859!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2de427547c986359%3A0x1fd8b12518a3a506!2sAfwo%20Hairdesign!5e0!3m2!1sen!2sid!4v1792198232255!5m2!1sen!2sid"
+                    width="600"
+                    height="450"
+                    style="border:0"
+                    loading="lazy"
+                    allowfullscreen=""
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    aria-hidden="true"
+                    tabindex="-1">
+                  </iframe>
+                </div>
+              </div>
+              <address class="lokasi-address"><!-- GANTI ALAMAT: ubah di CONFIG (src/main.js) dan teks default ini -->
+                <span data-address-1>[ISI ALAMAT SALON]</span><span data-address-2>Jakarta Selatan</span>
+              </address>
+              <div class="lokasi-actions">
+                <a class="button button-dark" data-maps-link href="https://maps.app.goo.gl/qqGACZnpg8HkfvVJ6" target="_blank" rel="noreferrer">Buka di Google Maps <span>↗</span></a>
+                <a class="button button-outline" data-booking-link href="#" target="_blank" rel="noreferrer">Chat WhatsApp <span>↗</span></a>
+              </div>
+            </div>
+            <div class="lokasi-hours reveal">
+              <p class="hours-status" id="hoursStatus" role="status"><i aria-hidden="true"></i><span>Memeriksa jam buka…</span></p>
+              <table class="hours-table" id="hoursTable"><caption class="sr-only">Jam operasional Afwo Hair Design</caption><tbody></tbody></table>
+              <p class="hours-note">Waktu setempat (WITA). Mohon booking dulu sebelum datang.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="closing-cta section-dark" id="booking" aria-labelledby="cta-title">
+          <div class="container cta-inner reveal"><p class="eyebrow eyebrow-light"><span>✦</span> Saatnya giliranmu</p><h2 id="cta-title" class="split-title">Siap tampil<br /><em>lebih kamu?</em></h2><p>Kami melayani dengan sistem booking. Kirim satu pesan, kami konfirmasi jadwalmu.</p><a class="button button-gold button-large" data-booking-link href="https://wa.me/6281234567890?text=Halo%20Afwo%2C%20saya%20ingin%20booking%20konsultasi." target="_blank" rel="noreferrer">Booking Sekarang <span>↗</span></a></div>
+          <div class="cta-mark">AFWO<span>.</span></div>
+        </section>
+      </main>
+
+      <main class="view svc-page" id="view-layanan" hidden>
+        <section class="svc-hero section-dark">
+          <div class="container">
+            <a class="back-link" href="#/">← Kembali ke Beranda</a>
+            <p class="eyebrow eyebrow-light"><span>✦</span> Daftar Layanan</p>
+            <h1 class="svc-title">Semua layanan <em>Afwo.</em></h1>
+            <p class="svc-sub" id="svcCount"></p>
+          </div>
+        </section>
+        <section class="svc-list-wrap section-light">
+          <div class="container">
+            <div class="svc-filters" id="svcFilters" role="group" aria-label="Filter kategori layanan"></div>
+            <ul class="svc-list" id="svcList"></ul>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer section-dark" id="kontak">
+        <div class="container footer-main">
+          <div class="footer-brand"><a class="wordmark" href="#top">AFWO<span class="wordmark-dot">.</span></a><p>Rambut baru.<br /><em>Energi baru.</em></p></div>
+          <div class="footer-col"><p class="footer-label">Navigasi</p><a href="#top">Beranda</a><a href="#layanan">Layanan</a><a href="#gaya">Gaya Potong</a><a href="#galeri">Galeri</a><a href="#tentang">Tentang</a><a href="#faq">FAQ</a><a href="#lokasi">Lokasi &amp; Jam Buka</a></div>
+          <div class="footer-col"><p class="footer-label">Datang &amp; Sapa</p><!-- GANTI KONTAK: alamat, WhatsApp, email, jam --> <p>Cluster Magnolia No.145, Pemurus Luar, Kec. Banjarmasin Tim., Kabupaten Banjar<br />Kalimantan Selatan</p><a data-whatsapp-link href="https://wa.me/+628115139990" target="_blank" rel="noreferrer">+62 811-5139-990</a><a data-email-link href="mailto:hello@afwohair.com">hello@afwohair.com</a><p>Selasa-Minggu, 10.00–19.00 Wita</p></div>
+          <div class="footer-col footer-social"><p class="footer-label">Ikuti kami</p><a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram <span>↗</span></a><p class="footer-small">Layanan dengan sistem booking. Atur jadwal lewat WhatsApp sebelum datang.</p></div>
+        </div>
+        <div class="container footer-bottom"><span>© 2026 Afwo Hair Design. All rights reserved.</span><span>Designed with intent <b>✦</b></span></div>
+      </footer>
+    </div>
+  </body>
+</html>
