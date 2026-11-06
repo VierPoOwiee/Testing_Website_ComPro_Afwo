@@ -1,3 +1,20 @@
+@font-face {
+  font-family: 'Hanken Grotesk';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('../assets/fonts/hanken-grotesk-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Hanken Grotesk';
+  font-style: italic;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('../assets/fonts/hanken-grotesk-latin-italic.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   --ink: #151514;
   --ink-soft: #242321;
@@ -21,6 +38,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 92px; }
 body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 a { color: inherit; text-decoration: none; }
 img { display: block; width: 100%; height: 100%; object-fit: cover; }
+picture { display: block; width: 100%; height: 100%; }
 button { font: inherit; }
 h1, h2, h3, .wordmark, .stat strong, .cta-mark { font-family: var(--font-display); }
 .site-shell { overflow-x: clip; }
@@ -145,8 +163,8 @@ em { color: var(--gold); font-weight: inherit; }
 .footer-label { margin: 0 0 18px; color: var(--gold); font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
 .footer-col p { margin: 0 0 8px; }
 .footer-social a span { color: var(--gold); margin-left: 10px; }
-.footer-small { max-width: 180px; margin-top: 40px !important; color: rgba(246,245,241,.4); font-size: 12px; }
-.footer-bottom { display: flex; justify-content: space-between; gap: 20px; padding-top: 18px; border-top: 1px solid var(--line-light); color: rgba(246,245,241,.4); font-size: 11px; letter-spacing: .04em; }
+.footer-small { max-width: 180px; margin-top: 40px !important; color: rgba(246,245,241,.64); font-size: 12px; }
+.footer-bottom { display: flex; justify-content: space-between; gap: 20px; padding-top: 18px; border-top: 1px solid var(--line-light); color: rgba(246,245,241,.64); font-size: 11px; letter-spacing: .04em; }
 .footer-bottom b { color: var(--gold); font-size: 13px; }
 
 .reveal { opacity: 0; transform: translateY(24px); }
@@ -590,18 +608,6 @@ img[hidden] { display: none; }
 .gaya-more p { margin: 0; color: var(--muted); font-size: 13px; letter-spacing: .04em; }
 
 
-/* ===== kartu gaya yang fotonya sudah ada di Galeri Karya: teks bayangan ===== */
-.gaya-media.is-ghost { display: flex; flex-direction: column; justify-content: flex-end; gap: 14px; padding: clamp(16px, 1.8vw, 24px); background: radial-gradient(circle at 30% 12%, rgba(215,173,98,.3), transparent 55%), linear-gradient(160deg, #2e2a23, #151514); }
-.gaya-ghost { color: rgba(215,173,98,.14); font-family: var(--font-display); font-size: clamp(26px, 3.2vw, 46px); font-weight: 800; line-height: .94; letter-spacing: -.04em; text-transform: uppercase; -webkit-text-stroke: 1.2px rgba(215,173,98,.75); text-shadow: 0 0 34px rgba(215,173,98,.38), 0 8px 22px rgba(0,0,0,.5); overflow-wrap: anywhere; }
-.gaya-ghost-note { align-self: flex-start; padding-bottom: 3px; border-bottom: 1px solid var(--gold); color: rgba(246,245,241,.82); font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; transition: color .25s ease; }
-.gaya-ghost-note:hover { color: var(--gold); }
-.gaya-card:hover .gaya-media.is-ghost .gaya-ghost { color: rgba(215,173,98,.24); }
-@media (max-width: 640px) {
-  .gaya-ghost { font-size: clamp(20px, 6.4vw, 30px); }
-  .gaya-ghost-note { font-size: 9px; }
-}
-
-
 /* ===== navbar modern: pil kaca melayang ===== */
 .footer-col a { transition: color .25s ease; }
 .footer-col a:hover { color: var(--gold); }
@@ -643,3 +649,58 @@ img[hidden] { display: none; }
   .nav-progress { left: 26px; right: 26px; }
 }
 @media (prefers-reduced-motion: reduce) { .nav-pill, .nav-pill::before { transition: none; } }
+
+/* =====================================================================
+   HERO (H1 baru) + GALERI KARYA UNGGULAN
+   ===================================================================== */
+.hero-title { max-width: none; font-size: clamp(46px, 6.6vw, 100px); }
+.hero-title-line { display: block; }
+.hero-copy { max-width: 340px; }
+@media (max-width: 640px) {
+  .hero-title { font-size: clamp(42px, 12.4vw, 76px); }
+  .hero-copy { max-width: none; }
+}
+
+.heading-aside-sub { display: block; margin-top: 10px; font-size: 13px; }
+.gaya-media { aspect-ratio: 3 / 4; }
+.gaya-media img { position: absolute; inset: 0; }
+.gaya-card.is-lead { grid-column: span 2; grid-row: span 2; }
+.gaya-card.is-lead .gaya-media { flex: 1 1 auto; aspect-ratio: auto; min-height: 360px; }
+.gaya-card.is-lead .gaya-body h3 { font-size: clamp(26px, 2.8vw, 40px); }
+.gaya-card.is-lead .gaya-desc { max-width: 460px; font-size: 15px; }
+
+.gaya-flag { position: absolute; left: 0; bottom: 0; z-index: 1; display: inline-flex; align-items: center; gap: 8px; padding: 9px 12px; background: var(--ink); color: var(--gold); font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.gaya-flag i { font-style: normal; }
+.gaya-media .gaya-pick { position: absolute; top: 10px; right: 10px; z-index: 2; min-height: 44px; border-color: rgba(246,245,241,.55); background: rgba(21,21,20,.62); color: var(--paper); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.gaya-media .gaya-pick:hover, .gaya-media .gaya-pick[aria-pressed="true"] { background: var(--ink); border-color: var(--gold); }
+.gaya-body .gaya-svc { margin-top: 12px; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.gaya-svc strong { color: var(--gold-ink); }
+.gaya-actions { align-items: stretch; }
+.gaya-book { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; padding: 0 16px; background: var(--ink); color: var(--paper); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; transition: background .25s ease, color .25s ease; }
+.gaya-book:hover { background: var(--gold); color: var(--ink); }
+.gaya-ref { display: inline-flex; align-items: flex-end; min-height: 44px; padding: 14px 0 4px; border-bottom: 0; background: linear-gradient(var(--gold), var(--gold)) bottom / 100% 1px no-repeat; }
+:where(.gaya-book, .svc-chip, .gaya-pick, .gaya-ref):focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 3px; }
+.gaya-filters .svc-chip { min-height: 44px; }
+.gaya-filters .svc-chip.is-active { border-color: var(--gold-deep); box-shadow: inset 0 -3px 0 var(--gold); }
+.gaya-filters .svc-chip.is-active small { color: var(--gold); opacity: 1; }
+
+.gaya-promo { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin: -10px 0 32px; padding: 14px 18px; border: 1px solid var(--gold-deep); background: rgba(215,173,98,.12); font-size: 13px; }
+.gaya-promo[hidden] { display: none; }
+.gaya-promo i { margin-right: 8px; color: var(--gold-ink); font-style: normal; }
+.gaya-promo a { margin-left: auto; padding-bottom: 3px; border-bottom: 1px solid var(--gold); font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+
+@media (max-width: 700px) {
+  .gaya-card.is-lead { grid-row: span 1; }
+  .gaya-card.is-lead .gaya-media { flex: none; aspect-ratio: 4 / 5; min-height: 0; }
+}
+@media (max-width: 640px) {
+  .gaya-actions { gap: 4px; }
+  .gaya-book { width: 100%; }
+  .gaya-ref { align-self: flex-start; }
+  .gaya-desc { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .gaya-card.is-lead .gaya-desc { -webkit-line-clamp: 4; }
+  .gaya-media .gaya-pick { top: 8px; right: 8px; padding: 0 10px 0 9px; }
+  .gaya-promo a { margin-left: 0; }
+}
+.gaya-card.is-lead .gaya-body { flex: 0 0 auto; }
+@media (max-width: 700px) { .gaya-card.is-lead .gaya-body { flex: 1; } }

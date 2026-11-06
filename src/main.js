@@ -8,8 +8,9 @@
     mapsQuery: 'Afwo Hair Design, Kalimantan Selatan', // GANTI dengan alamat/nama tempat di Google Maps
     mapsUrl: 'https://maps.app.goo.gl/kiMqnTDABVW5WLUd6', // link buka maps salon (tombol Buka di Google Maps)
     reviewsUrl: 'https://maps.app.goo.gl/qqGACZnpg8HkfvVJ6', // tempel link ulasan Google Maps; kosong = pakai pencarian Maps
-    // jam buka per hari (0 = Minggu ... 6 = Sabtu), format 24 jam WIB. null = tutup
-    hours: { 0: ['10:00', '19:00 WITA'], 1: null, 2: ['10:00', '19:00 WITA'], 3: ['10:00', '19:00 WITA'], 4: ['10:00', '19:00 WITA'], 5: ['10:00', '19:00 WITA'], 6: ['10:00', '19:00 WITA'] },
+    // jam buka per hari (0 = Minggu ... 6 = Sabtu), format 24 jam WITA. null = tutup
+    // Hari libur hanya Senin (index 1). Hari lain buka 10.00–18.00 WITA.
+    hours: { 0: ['10:00', '18:00 WITA'], 1: null, 2: ['10:00', '18:00 WITA'], 3: ['10:00', '18:00 WITA'], 4: ['10:00', '18:00 WITA'], 5: ['10:00', '18:00 WITA'], 6: ['10:00', '18:00 WITA'] },
   };
   const picked = []; // gaya potong yang dipilih pengunjung (ikut terkirim ke WhatsApp)
   const bookingText = () => (picked.length
@@ -77,6 +78,7 @@
   };
 
   const setupGalleryCarousel = () => {
+    if (reduced()) return;
     const wrapper = document.querySelector('.gallery-carousel');
     const track = document.querySelector('.gallery-track');
     const group = track?.querySelector('.gallery-group');
@@ -115,8 +117,33 @@
   const photoSrc = (n) => `assets/foto/${slug(n)}.jpg`;
   // Urutan foto: (1) file spesifik assets/foto/<layanan>.jpg -> (2) foto salon dari peta cadangan ini -> (3) pelat monogram.
   const GF = (f) => `assets/foto/gaya/${f}.jpeg`;
-  const SVC_FB = { 'potong-wanita': GF('Soft_layered_color_full_medium_brown_no_bleach'), 'potong-poni': GF('Layered_with_curtain_color_full_brown_no_bleach'), 'potong-wanita-cuci-blow': GF('short_layered_color_Medium_blonde'), 'cuci-catok-styling-blow': GF('Full_layered_color_balayage_medium_Ash_brown'), 'keratin-premium': GF('long_bob_color_balaye_dark_ash_gray'), 'smoothing': GF('medium_layered_color_balayage_Ash_blonde'), 'blow-perm': GF('Medium_Layer_Balayage'), 'basic-color': GF('layered_color_Red_Burgundy_no_bleach'), 'basic-color-two-apply': GF('medium_layered_Color_Full_Medium_coppery_blonde'), 'refresh-color-treatment': GF('soft_balayage_color_brown_no_bleach'), 'fashion-color': GF('layer_color_Balayage_Pastel_Purple'), 'highlight': GF('Buterfly_Color_Balayage_Ash_gray_dg_base_dark_ash_brown'), 'peek-a-boo': GF('layer_color_artistic_teknik'), 'cat-akar': GF('medium_layered_color_Red'), 'bleach-akar': GF('layered_color_balayage_full_gray'), 'creambath': GF('medium_layered_Color_Full_Medium_coppery_blonde') };
+  const SVC_FB = { 'potong-wanita': GF('soft-layer-medium-brown'), 'potong-pria': GF('potong-pria'), 'potong-poni': GF('layer-curtain-full-brown'), 'potong-wanita-cuci-blow': GF('short-layer-medium-blonde'), 'potong-pria-cuci-blow': GF('potong-pria'), 'cuci-catok-styling-blow': GF('full-layer-balayage-ash-brown'), 'keratin-premium': GF('long-bob-dark-ash-gray'), 'smoothing': GF('medium-layer-ash-blonde'), 'blow-perm': GF('medium-layer-balayage'), 'basic-color': GF('layer-red-burgundy'), 'basic-color-two-apply': GF('medium-layer-coppery-blonde'), 'refresh-color-treatment': GF('soft-balayage-brown'), 'fashion-color': GF('layer-balayage-pastel-purple'), 'highlight': GF('butterfly-balayage-ash-gray'), 'peek-a-boo': GF('layer-artistic-color'), 'cat-akar': GF('medium-layer-red'), 'bleach-akar': GF('layer-balayage-full-gray'), 'creambath': GF('medium-layer-coppery-blonde') };
+  // Daftar layanan yang SUDAH punya file khusus assets/foto/<slug>.jpg. Tambahkan slug-nya di sini saat foto asli diunggah.
+  const SERVICE_PHOTOS = [];
+  const svcSrc = (n) => (SERVICE_PHOTOS.includes(slug(n)) ? photoSrc(n) : (SVC_FB[slug(n)] || photoSrc(n)));
+  const svcAlt = (n) => {
+    if (SERVICE_PHOTOS.includes(slug(n))) return `Hasil layanan ${n} di AFWO Hair Design`;
+    const w = ((window.AFWO_GALLERY || {}).WORKS || []).find((x) => x.image === SVC_FB[slug(n)]);
+    return w ? w.alt : `Contoh hasil layanan ${n}`;
+  };
   const fbAttr = (n, map = SVC_FB) => (map[slug(n)] ? ` data-fallback="${map[slug(n)]}"` : '');
+  // Foto karya memakai varian AVIF + WebP responsif di assets/foto/gaya/opt/.
+  // Kalau foto belum dioptimalkan, pictureTag otomatis jatuh ke <img> JPEG biasa.
+  const optSet = (src, ext, maxWidth = 960) => {
+    const m = /^(.*\/gaya\/)([^/]+)\.(jpe?g|png)$/i.exec(src);
+    if (!m) return '';
+    return [480, 720, 960].filter((w) => w <= (maxWidth || 960)).map((w) => `${m[1]}opt/${m[2]}-${w}.${ext} ${w}w`).join(', ');
+  };
+  const photoWidth = (src) => ((window.AFWO_GALLERY || {}).WORKS || []).find((w) => w.image === src)?.width || 960;
+  const pictureTag = (src, { alt = '', width = 960, height = 1280, sizes = '100vw', loading = 'lazy', fetchpriority = '', style = '', extra = '', className = '' } = {}) => {
+    const avif = optSet(src, 'avif', width);
+    const webp = optSet(src, 'webp', width);
+    const srcAttr = esc(src);
+    const altAttr = esc(alt);
+    const sizesAttr = esc(sizes);
+    const styleAttr = style ? ` style="${esc(style)}"` : '';
+    return `<picture${className ? ` class="${className}"` : ''}>${avif ? `<source type="image/avif" srcset="${esc(avif)}" sizes="${sizesAttr}">` : ''}${webp ? `<source type="image/webp" srcset="${esc(webp)}" sizes="${sizesAttr}">` : ''}<img data-photo src="${srcAttr}" width="${width}" height="${height}" alt="${altAttr}"${loading ? ` loading="${loading}"` : ''} decoding="async"${fetchpriority ? ` fetchpriority="${fetchpriority}"` : ''}${styleAttr}${extra}></picture>`;
+  };
   const markNoPhoto = (img) => {
     const fb = img.dataset.fallback;
     if (fb && !img.dataset.fbTried) { img.dataset.fbTried = '1'; img.src = fb; return; }
@@ -175,14 +202,18 @@
     const track = $('#svxTrack');
     if (!slider || !track || !window.gsap) return null;
     const items = HIGHLIGHT.map((name) => SERVICES.find((s) => s[0] === name)).filter(Boolean);
-    track.innerHTML = items.map((s) => `<article class="svx-card" data-mono="${mono(s[0])}" tabindex="0" role="button" aria-label="Lihat penjelasan ${s[0]}"><img data-photo${fbAttr(s[0])} src="${photoSrc(s[0])}" alt="Model dengan hasil ${s[0]}" loading="lazy" decoding="async" draggable="false" /><div class="svx-label"><small>${s[1]}</small><strong>${s[0]}</strong></div><div class="svx-hover">Lihat detail</div></article>`).join('');
+    track.innerHTML = items.map((s) => {
+      const src = svcSrc(s[0]);
+      return `<div class="svx-card" data-mono="${mono(s[0])}" tabindex="0" role="button">${pictureTag(src, { alt: svcAlt(s[0]), width: photoWidth(src), height: 1280, sizes: '(max-width: 640px) 70vw, 300px', extra: `${fbAttr(s[0])} draggable="false"` })}<div class="svx-label"><small>${s[1]}</small><strong>${s[0]}</strong></div><div class="svx-hover">Lihat detail</div></div>`;
+    }).join('');
     let cards = [...track.children];
     cards.forEach((card, i) => { card._svc = items[i]; });
 
     const info = document.createElement('div');
     info.className = 'svx-info';
     info.setAttribute('role', 'dialog');
-    info.innerHTML = '<small></small><h3></h3><p></p><a target="_blank" rel="noreferrer">Booking layanan ini ↗</a>';
+    info.setAttribute('aria-label', 'Detail layanan');
+    info.innerHTML = `<small></small><h3></h3><p></p><a target="_blank" rel="noreferrer" href="${waLink(HIGHLIGHT[0])}">Booking layanan ini ↗</a>`;
     const closeBtn = document.createElement('button');
     closeBtn.className = 'svx-close';
     closeBtn.type = 'button';
@@ -315,6 +346,12 @@
     window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => { if (!open) { measure(); place(); } }, 150); });
     return { close };
   };
+  let sliderBuilt = false;
+  const ensureSlider = () => {
+    if (sliderBuilt) return;
+    sliderBuilt = true;
+    window.__svx = initServiceSlider();
+  };
 
   /* ---- halaman semua layanan ---- */
   let svcBatch = [];
@@ -325,7 +362,10 @@
     $('#svcCount').textContent = `${SERVICES.length} layanan dalam ${CATS.length} kategori. Klik layanan untuk melihat penjelasannya.`;
     const count = (c) => (c === 'Semua' ? SERVICES.length : SERVICES.filter((s) => s[1] === c).length);
     filters.innerHTML = ['Semua', ...CATS].map((c, i) => `<button type="button" class="svc-chip${i ? '' : ' is-active'}" data-cat="${c}">${c}<small>${count(c)}</small></button>`).join('');
-    list.innerHTML = SERVICES.map((s, i) => `<li class="svc-row" data-cat="${s[1]}"><button class="svc-head" type="button" aria-expanded="false"><span class="svc-no">${String(i + 1).padStart(2, '0')}</span><span class="svc-name">${s[0]}</span><span class="svc-cat">${s[1]}</span><span class="svc-plus" aria-hidden="true"></span></button><div class="svc-body"><div><div class="svc-open"><div class="svc-photo" data-mono="${mono(s[0])}"><img data-photo${fbAttr(s[0])} src="${photoSrc(s[0])}" alt="Model dengan hasil ${s[0]}" loading="lazy" decoding="async" /></div><div class="svc-text"><p>${s[2]}</p><a class="text-link" target="_blank" rel="noreferrer" href="${waLink(s[0])}">Booking layanan ini <span>↗</span></a>${s[1] === 'Potong' ? '<a class="text-link" href="#gaya">Pilih gaya potong <span>↓</span></a>' : ''}</div></div></div></div></li>`).join('');
+    list.innerHTML = SERVICES.map((s, i) => {
+      const src = svcSrc(s[0]);
+      return `<li class="svc-row" data-cat="${s[1]}"><button class="svc-head" type="button" aria-expanded="false"><span class="svc-no">${String(i + 1).padStart(2, '0')}</span><span class="svc-name">${s[0]}</span><span class="svc-cat">${s[1]}</span><span class="svc-plus" aria-hidden="true"></span></button><div class="svc-body"><div><div class="svc-open"><div class="svc-photo" data-mono="${mono(s[0])}">${pictureTag(src, { alt: svcAlt(s[0]), width: photoWidth(src), height: 1280, sizes: '(max-width: 640px) 92px, 170px', extra: fbAttr(s[0]) })}</div><div class="svc-text"><p>${s[2]}</p><a class="text-link" target="_blank" rel="noreferrer" href="${waLink(s[0])}">Booking layanan ini <span>↗</span></a>${s[1] === 'Potong' ? '<a class="text-link" href="#gaya">Pilih gaya potong <span>↓</span></a>' : ''}</div></div></div></div></li>`;
+    }).join('');
 
     list.addEventListener('click', (e) => {
       const head = e.target.closest('.svc-head');
@@ -350,6 +390,12 @@
     });
   };
   const leaveServicePage = () => { svcBatch.forEach((t) => t.kill()); svcBatch = []; };
+  let servicePageBuilt = false;
+  const ensureServicePage = () => {
+    if (servicePageBuilt) return;
+    servicePageBuilt = true;
+    buildServicePage();
+  };
   const playPageIntro = (name) => {
     if (name !== 'layanan' || !window.gsap || reduced()) return;
     gsap.timeline({ delay: .25 })
@@ -367,9 +413,9 @@
   /* ---- panel transisi 4 kolom (clip-path) + router hash ---- */
   const stRef = { b1: 0, b2: 0, b3: 0, b4: 0 };
   const applyPt = () => { const p = $('#pt'); if (p) for (let i = 1; i <= 4; i++) p.style.setProperty(`--b${i}`, `${stRef[`b${i}`]}%`); };
-  const sweep = (to, onDone) => {
+  const sweep = (to, onDone, speed = 1) => {
     const tl = gsap.timeline({ onUpdate: applyPt, onComplete: onDone });
-    [1, 2, 3, 4].forEach((i) => tl.to(stRef, { [`b${i}`]: to, duration: .55, ease: 'power2.inOut' }, (i - 1) * .09));
+    [1, 2, 3, 4].forEach((i) => tl.to(stRef, { [`b${i}`]: to, duration: .55 * speed, ease: 'power2.inOut' }, (i - 1) * .09 * speed));
     return tl;
   };
   const runCover = (label) => new Promise((resolve) => {
@@ -396,6 +442,7 @@
   let current = 'home';
   let busy = false;
   if (views.layanan && toRoute() === 'layanan') {
+    ensureServicePage();
     views.home.hidden = true; views.layanan.hidden = false; current = 'layanan';
     document.title = 'Semua Layanan — Afwo Hair Design';
   }
@@ -406,7 +453,8 @@
     else window.scrollTo({ top: y, behavior: immediate ? 'auto' : 'smooth' });
   };
   const swap = (name) => {
-    if (name !== 'layanan') leaveServicePage();
+    if (name === 'layanan') ensureServicePage();
+    else leaveServicePage();
     Object.entries(views).forEach(([key, el]) => { if (el) el.hidden = key !== name; });
     current = name;
     document.dispatchEvent(new CustomEvent('afwo:route', { detail: name }));
@@ -441,15 +489,17 @@
   window.addEventListener('popstate', () => { const r = toRoute(); if (r !== current) navigate(r, null, false); });
 
   /* ---- loader awal (dengan persentase) ---- */
+  // Loader tidak lagi menunggu semua gambar/font. Konten hero boleh tampil lebih cepat;
+  // gambar tetap dimuat paralel dan animasi intro dimulai setelah font siap (atau 700 ms).
   const boot = (() => {
     const p = $('#pt');
     if (!p) return { finish: () => Promise.resolve() };
     const cnt = $('#pt-count');
     const bar = $('#pt-bar');
-    let target = 6;
+    let target = 8;
     let shown = 0;
     const paint = () => {
-      shown += (target - shown) * .14;
+      shown += (target - shown) * (target >= 100 ? .34 : .2);
       if (target >= 100 && shown > 99.4) shown = 100;
       cnt.textContent = Math.round(shown);
       bar.style.transform = `scaleX(${shown / 100})`;
@@ -457,20 +507,14 @@
     };
     requestAnimationFrame(paint);
     const bump = (v) => { target = Math.min(100, Math.max(target, v)); };
-    if (document.readyState !== 'loading') bump(22); else document.addEventListener('DOMContentLoaded', () => bump(22));
-    const imgs = [...document.querySelectorAll('.hero img')];
-    let loaded = 0;
-    imgs.forEach((img) => {
-      const done = () => { loaded += 1; bump(22 + (loaded / imgs.length) * 50); };
-      if (img.complete) done(); else { img.addEventListener('load', done, { once: true }); img.addEventListener('error', done, { once: true }); }
-    });
-    document.fonts?.ready.then(() => bump(80));
+    if (document.readyState !== 'loading') bump(48); else document.addEventListener('DOMContentLoaded', () => bump(48), { once: true });
+    document.fonts?.ready.then(() => bump(86));
     return {
       finish: () => new Promise((resolve) => {
         bump(100);
-        const t0 = performance.now();
-        const wait = () => (shown >= 99.5 || performance.now() - t0 > 900 ? resolve() : requestAnimationFrame(wait));
-        wait();
+        // Jangan bergantung pada requestAnimationFrame: di perangkat lambat/headless
+        // frame bisa tersendat dan loader jadi menggantung.
+        setTimeout(resolve, 160);
       }),
     };
   })();
@@ -481,69 +525,94 @@
     const finish = () => { document.documentElement.classList.remove('is-loading'); resolve(); };
     if (!p) { play(); finish(); return; }
     if (!window.gsap || reduced()) {
-      p.style.transition = 'opacity .4s ease';
+      p.style.transition = 'opacity .3s ease';
       p.style.opacity = '0';
-      setTimeout(() => { p.remove(); play(); finish(); }, 420);
+      setTimeout(() => { p.remove(); play(); finish(); }, 320);
       return;
     }
     Object.assign(stRef, { b1: 100, b2: 100, b3: 100, b4: 100 });
     applyPt();
-    gsap.delayedCall(.12, play);
-    sweep(0, () => { p.classList.remove('is-boot', 'is-active'); finish(); });
+    gsap.delayedCall(.08, play);
+    sweep(0, () => { p.classList.remove('is-boot', 'is-active'); finish(); }, .42);
   });
 
 
-  /* ============ GAYA POTONG (referensi + pilihan), JAM BUKA, TOMBOL WHATSAPP ============ */
-  // Referensi gaya rambut WANITA. Format: [nama, potongan, penjelasan, kata kunci Pinterest, nama file foto tanpa .jpeg di assets/foto/gaya/]
-  const GAYA_GROUPS = ['Layer', 'Bob', 'Curtain Bangs', 'Butterfly', 'Pixie'];
+  /* ============ GALERI KARYA UNGGULAN (data & konfigurasi: src/works-data.js) ============ */
   const GAYA_MAX = 3;
-  const GAYA = [
-    ['Curtain Bang Balayage', 'Curtain Bangs', 'Curtain bangs yang jatuh lembut ke sisi wajah, dipadukan balayage hangat pada rambut panjang.', 'curtain bangs balayage long hair', 'Curtain_Bang_Balayage'],
-    ['Layer Butterfly Balayage', 'Butterfly', 'Butterfly layer dengan balayage ash brown. Rambut tampak penuh dan bergelombang.', 'butterfly cut balayage', 'Layer_Butterfly_Balayage'],
-    ['Long Bob Balayage Dark Ash Gray', 'Bob', 'Long bob lurus yang rapi dengan balayage dark ash gray. Bersih dan elegan.', 'long bob ash gray balayage', 'long_bob_color_balaye_dark_ash_gray'],
-    ['Layer Red Burgundy', 'Layer', 'Layer bergelombang dengan warna red burgundy tanpa bleach.', 'burgundy hair layers', 'layered_color_Red_Burgundy_no_bleach'],
-    ['Soft Layer Curtain Mahogany', 'Curtain Bangs', 'Soft layer dengan curtain bangs dan warna dark mahogany brown tanpa bleach.', 'mahogany brown curtain bangs layers', 'Soft_layered_with_curtain_color_Dark_mahogany_brown_no_bleach'],
-    ['Medium Layer Ash Blonde', 'Layer', 'Medium layer dengan balayage ash blonde dan layer yang membingkai wajah.', 'medium layered ash blonde balayage', 'medium_layered_color_balayage_Ash_blonde'],
-    ['Bob Layer Balayage Cool Brown', 'Bob', 'Bob berlayer dengan balayage cool brown yang memberi dimensi lembut.', 'layered bob balayage brown', 'Bob_layered_color_balayage_cool_brown'],
-    ['Pixie Cut', 'Pixie', 'Potongan pendek di sekitar telinga dengan poni halus. Tegas, ringan, dan mudah dirawat.', 'pixie cut women', 'Pixie_Cut'],
-    ['Layer Curtain Ash Blonde', 'Curtain Bangs', 'Layer panjang dengan curtain bangs dan warna full medium ash blonde.', 'layered curtain bangs ash blonde', 'Layered_with_curtain_Color_Full_Medium_Ash_blonde'],
-    ['Layer Curtain Full Brown', 'Curtain Bangs', 'Layer dengan curtain bangs dan warna full brown tanpa bleach. Natural dan hangat.', 'layered curtain bangs brown hair', 'Layered_with_curtain_color_full_brown_no_bleach'],
-    ['Butterfly Balayage Ash Gray', 'Butterfly', 'Butterfly cut dengan balayage ash gray di atas dasar dark ash brown.', 'butterfly haircut ash gray balayage', 'Buterfly_Color_Balayage_Ash_gray_dg_base_dark_ash_brown'],
-    ['Bob Oval Medium Blonde', 'Bob', 'Bob oval bergelombang dengan warna medium blonde tanpa bleach. Ringan dan mudah ditata.', 'oval bob haircut blonde wavy', 'Bob_Oval_color_medium_blonde_no_bleach'],
-    ['Oval Bob Balayage Gray', 'Bob', 'Oval bob dengan warna full balayage gray. Tegas namun tetap lembut.', 'oval bob gray balayage', 'Oval_Bob_with_medium_trap_color_full_balayage_gray'],
-    ['Medium Layer Balayage', 'Layer', 'Medium layer bergelombang dengan balayage merah yang hangat.', 'medium layered haircut red balayage', 'Medium_Layer_Balayage'],
-    ['Medium Layer Coppery Blonde', 'Layer', 'Medium layer dengan warna full medium coppery blonde yang berkilau.', 'copper blonde layered hair', 'medium_layered_Color_Full_Medium_coppery_blonde'],
-    ['Medium Layer Red', 'Layer', 'Medium layer bergelombang dengan warna merah yang berani.', 'red layered hair', 'medium_layered_color_Red'],
-    ['Full Layer Balayage Ash Brown', 'Layer', 'Layer penuh dengan balayage medium ash brown. Gelombang besar yang rapi.', 'long layered balayage ash brown', 'Full_layered_color_balayage_medium_Ash_brown'],
-    ['Layer Balayage Full Gray', 'Layer', 'Layer panjang dengan warna balayage full gray.', 'gray balayage layered hair', 'layered_color_balayage_full_gray'],
-    ['Layer Oval Balayage Ash Gray', 'Layer', 'Layer oval dengan balayage full ash gray yang jatuh halus.', 'ash gray balayage layers', 'layered_oval_color_Balayage_full_ash_gray'],
-    ['Layer Balayage Pastel Purple', 'Layer', 'Layer panjang dengan balayage pastel purple untuk tampilan yang berani.', 'pastel purple balayage layered hair', 'layer_color_Balayage_Pastel_Purple'],
-    ['Layer Artistic Color', 'Layer', 'Layer panjang dengan teknik pewarnaan artistik di sekitar wajah.', 'artistic hair color face framing', 'layer_color_artistic_teknik'],
-    ['Soft Layer Medium Brown', 'Layer', 'Soft layer bergelombang dengan warna full medium brown tanpa bleach.', 'soft layered haircut brown', 'Soft_layered_color_full_medium_brown_no_bleach'],
-    ['Short Layer Medium Blonde', 'Layer', 'Layer pendek sebahu dengan warna medium blonde. Ringan dan mudah ditata.', 'short layered haircut blonde', 'short_layered_color_Medium_blonde'],
-    ['Soft Balayage Brown', 'Layer', 'Soft balayage brown tanpa bleach pada rambut panjang bergelombang.', 'soft balayage brown hair', 'soft_balayage_color_brown_no_bleach'],
-  ];
-  const pinUrl = (q) => `https://www.pinterest.com/search/pins/?q=${encodeURIComponent(q)}`;
-  const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const ALL = 'All Works';
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const GAL = window.AFWO_GALLERY || { WORK_CATEGORIES: [], GALLERY_CONFIG: {}, WORKS: [] };
+  const GCFG = GAL.GALLERY_CONFIG || {};
+  const serviceBySlug = (sl) => SERVICES.find((s) => slug(s[0]) === sl) || null;
+  const objPos = (w) => esc(w.focus || '50% 30%');
+
+  // Urutan tampil: (1) karya featured sesuai featuredOrder, (2) karya dari layanan prioritas, (3) sisanya sesuai urutan data.
+  const orderedWorks = () => {
+    const fOrder = GCFG.featuredOrder || [];
+    const prio = GCFG.priorityServices || [];
+    const rank = (w, i) => {
+      if (w.featured) { const k = fOrder.indexOf(w.id); return [0, k < 0 ? 999 : k, i]; }
+      const p = prio.indexOf(w.serviceSlug);
+      return p > -1 ? [1, p, i] : [2, 0, i];
+    };
+    return (GAL.WORKS || [])
+      .filter((w) => w && w.image && w.title)
+      .map((w, i) => ({ w, r: rank(w, i) }))
+      .sort((a, b) => a.r[0] - b.r[0] || a.r[1] - b.r[1] || a.r[2] - b.r[2])
+      .map((o) => o.w);
+  };
+
+  const workBookingLink = (w) => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(`${CONFIG.bookingMessage}\nGaya yang saya pilih:\n- ${w.title}\nMohon info jadwal yang tersedia ya.`)}`;
+
+  const workCard = (w) => {
+    const svc = serviceBySlug(w.serviceSlug);
+    return `<li class="gaya-card${w.featured ? ' is-featured' : ''}" data-category="${esc(w.category)}" data-id="${esc(w.id)}" data-name="${esc(w.title)}">
+      <div class="gaya-media" data-mono="${mono(w.title)}">
+        ${pictureTag(w.image, { alt: w.alt, width: w.width || 960, height: w.height || 1280, sizes: '(max-width: 640px) 100vw, (max-width: 900px) 50vw, 33vw', style: `object-position:${w.focus || '50% 30%'}` })}
+        <span class="image-tag">${esc(w.category)}</span>
+        ${w.featured ? '<span class="gaya-flag"><i aria-hidden="true">✦</i> Karya Unggulan</span>' : ''}
+        <button class="gaya-pick" type="button" aria-pressed="false" aria-label="Pilih gaya ${esc(w.title)}"><i aria-hidden="true"></i><span>Pilih</span></button>
+      </div>
+      <div class="gaya-body">
+        <h3>${esc(w.title)}</h3>
+        <p class="gaya-desc">${esc(w.description || '')}</p>
+        ${svc ? `<p class="gaya-svc">Layanan: <strong>${esc(svc[0])}</strong></p>` : ''}
+        <div class="gaya-actions"><a class="gaya-book" href="${workBookingLink(w)}" target="_blank" rel="noreferrer">Booking gaya ini <span aria-hidden="true">↗</span></a><a class="gaya-ref" href="#layanan">Lihat layanan <span aria-hidden="true">→</span></a></div>
+      </div></li>`;
+  };
+
+  // Carousel "Galeri Karya" memakai data yang sama (karya unggulan lebih dulu), jadi label & alt selalu sesuai fotonya.
+  const buildCarousel = () => {
+    const group = $('#galleryGroup');
+    if (!group) return;
+    group.innerHTML = orderedWorks().slice(0, GCFG.carouselLimit || 10).map((w) => `<article class="gallery-card">${pictureTag(w.image, { alt: w.alt, width: w.width || 960, height: w.height || 1280, sizes: '(max-width: 640px) 78vw, 320px', style: `object-position:${w.focus || '50% 30%'}` })}<span class="image-tag">${esc(w.category)}</span></article>`).join('');
+  };
+  let carouselBuilt = false;
+  const ensureCarousel = () => {
+    if (carouselBuilt) return;
+    carouselBuilt = true;
+    buildCarousel();
+    setupGalleryCarousel();
+  };
 
   const buildGaya = () => {
     const grid = $('#gayaGrid');
     const filters = $('#gayaFilters');
     const tray = $('#gayaTray');
     if (!grid || !filters || !tray) return;
-    const count = (g) => (g === 'Semua' ? GAYA.length : GAYA.filter((s) => s[1] === g).length);
-    filters.innerHTML = ['Semua', ...GAYA_GROUPS].map((g, i) => `<button type="button" class="svc-chip${i ? '' : ' is-active'}" data-group="${g}" aria-pressed="${i ? 'false' : 'true'}">${g}<small>${count(g)}</small></button>`).join('');
-    // Foto yang sudah tampil di Galeri Karya tidak diulang di sini: kartunya memakai teks bayangan + link ke galeri.
-    const used = new Set([...document.querySelectorAll('.gallery-card img')].map((i) => (i.getAttribute('src') || '').split('/').pop().replace(/\.jpe?g$/i, '')));
-    const media = (s) => (used.has(s[4])
-      ? `<div class="gaya-media is-ghost"><span class="gaya-ghost" aria-hidden="true">${esc(s[0]).split(' ').join('<br />')}</span><a class="gaya-ghost-note" href="#galeri">Foto ada di Galeri Karya <span aria-hidden="true">↓</span></a><span class="image-tag">${s[1]}</span></div>`
-      : `<div class="gaya-media" data-mono="${mono(s[0])}"><img data-photo src="assets/foto/gaya/${s[4]}.jpeg" alt="Referensi gaya ${esc(s[0])}" loading="lazy" decoding="async" /><span class="image-tag">${s[1]}</span></div>`);
-    const list = [...GAYA].sort((x, y) => used.has(x[4]) - used.has(y[4])); // kartu berfoto tampil lebih dulu
-    grid.innerHTML = list.map((s) => `<li class="gaya-card" data-group="${s[1]}" data-name="${esc(s[0])}">
-      ${media(s)}
-      <div class="gaya-body"><h3>${esc(s[0])}</h3><p>${esc(s[2])}</p>
-        <div class="gaya-actions"><button class="gaya-pick" type="button" aria-pressed="false"><i aria-hidden="true"></i><span>Pilih gaya ini</span></button><a class="gaya-ref" href="${pinUrl(s[3])}" target="_blank" rel="noreferrer">Lihat referensi <span aria-hidden="true">↗</span></a></div>
-      </div></li>`).join('');
+    const works = orderedWorks();
+    const cats = [ALL, ...(GAL.WORK_CATEGORIES || []).filter((c) => works.some((w) => w.category === c))];
+    const count = (c) => (c === ALL ? works.length : works.filter((w) => w.category === c).length);
+    filters.innerHTML = cats.map((c, i) => `<button type="button" class="svc-chip${i ? '' : ' is-active'}" data-category="${esc(c)}" aria-pressed="${i ? 'false' : 'true'}">${esc(c)}<small>${count(c)}</small></button>`).join('');
+    grid.innerHTML = works.map(workCard).join('');
+
+    // strip promosi layanan: hanya tampil jika pemilik mengisi promotedService (bukan klaim popularitas)
+    const promo = $('#gayaPromo');
+    const promoSvc = GCFG.promotedService ? serviceBySlug(GCFG.promotedService) : null;
+    if (promo && promoSvc) {
+      promo.innerHTML = `<span><i aria-hidden="true">✦</i> Layanan yang sedang kami promosikan</span><strong>${esc(promoSvc[0])}</strong><a href="#layanan">Lihat layanan <span aria-hidden="true">→</span></a>`;
+      promo.hidden = false;
+    }
 
     const label = tray.querySelector('.gaya-tray-label');
     const chips = $('#gayaChips');
@@ -560,7 +629,7 @@
         card.classList.toggle('is-picked', on);
         const btn = card.querySelector('.gaya-pick');
         btn.setAttribute('aria-pressed', String(on));
-        btn.querySelector('span').textContent = on ? 'Terpilih' : 'Pilih gaya ini';
+        btn.querySelector('span').textContent = on ? 'Terpilih' : 'Pilih';
       });
       tray.hidden = picked.length === 0;
       label.innerHTML = `<b id="gayaCount">${picked.length}</b> dari ${GAYA_MAX} gaya dipilih`;
@@ -587,24 +656,34 @@
       render();
     });
     $('#gayaClear')?.addEventListener('click', () => { picked.length = 0; render(); });
-    const PAGE = 8;
-    let group = 'Semua';
-    let limit = PAGE;
+
+    // Muat bertahap: 3 baris per langkah. Karya pertama yang featured tampil besar (2 kolom x 2 baris), jadi jumlahnya disesuaikan agar baris terakhir tetap penuh.
     const cards = [...grid.querySelectorAll('.gaya-card')];
     const more = $('#gayaMore');
     const moreWrap = $('#gayaMoreWrap');
     const moreInfo = $('#gayaMoreInfo');
+    const status = $('#gayaStatus');
+    const cols = () => Math.max(1, getComputedStyle(grid).gridTemplateColumns.split(' ').length);
+    let category = ALL;
+    let limit = null;
+    let lastCols = cols();
     const apply = () => {
-      const match = cards.filter((c) => group === 'Semua' || c.dataset.group === group);
-      cards.forEach((c) => { const i = match.indexOf(c); c.hidden = !(i > -1 && i < limit); });
-      const shown = Math.min(limit, match.length);
+      const c = cols();
+      const match = cards.filter((card) => category === ALL || card.dataset.category === category);
+      const lead = !!match[0] && match[0].classList.contains('is-featured');
+      if (limit === null) limit = Math.max(c, c * 3 - (lead ? (c >= 3 ? 3 : 1) : 0));
+      cards.forEach((card) => { card.hidden = true; card.classList.remove('is-lead'); });
+      const shownCards = match.slice(0, limit);
+      shownCards.forEach((card) => { card.hidden = false; });
+      if (lead) match[0].classList.add('is-lead');
+      const shown = shownCards.length;
       const left = match.length - shown;
       if (moreWrap) {
         moreWrap.hidden = left <= 0;
-        moreInfo.textContent = `Menampilkan ${shown} dari ${match.length} gaya`;
-        more.firstChild.textContent = `Tampilkan ${Math.min(PAGE, left)} gaya lagi `;
+        moreInfo.textContent = `Menampilkan ${shown} dari ${match.length} karya`;
+        more.firstChild.textContent = `Tampilkan ${Math.min(c * 3, left)} karya lagi `;
       }
-      return match;
+      return { match, shownCards };
     };
     const reveal = (list) => {
       if (window.gsap && !reduced() && list.length) gsap.fromTo(list, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .45, stagger: .04, ease: 'power2.out', overwrite: true, clearProps: 'opacity,transform' });
@@ -613,18 +692,32 @@
     filters.addEventListener('click', (e) => {
       const chip = e.target.closest('.svc-chip');
       if (!chip) return;
-      group = chip.dataset.group;
-      limit = PAGE;
-      filters.querySelectorAll('.svc-chip').forEach((c) => { const on = c === chip; c.classList.toggle('is-active', on); c.setAttribute('aria-pressed', String(on)); });
-      reveal(apply().slice(0, limit));
+      category = chip.dataset.category;
+      limit = null;
+      filters.querySelectorAll('.svc-chip').forEach((b) => { const on = b === chip; b.classList.toggle('is-active', on); b.setAttribute('aria-pressed', String(on)); });
+      const { match, shownCards } = apply();
+      if (status) status.textContent = `${category}: ${match.length} karya`;
+      reveal(shownCards);
     });
     more?.addEventListener('click', () => {
       const before = limit;
-      limit += PAGE;
-      reveal(apply().slice(before, limit));
+      limit += cols() * 3;
+      const { shownCards } = apply();
+      reveal(shownCards.slice(before));
+    });
+    let rz;
+    window.addEventListener('resize', () => {
+      clearTimeout(rz);
+      rz = setTimeout(() => { const c = cols(); if (c !== lastCols) { lastCols = c; limit = null; apply(); } }, 160);
     });
     apply();
     render();
+  };
+  let gayaBuilt = false;
+  const ensureGaya = () => {
+    if (gayaBuilt) return;
+    gayaBuilt = true;
+    buildGaya();
   };
 
   /* ---- jam buka: tabel + status buka/tutup (waktu WITA) ---- */
@@ -635,7 +728,7 @@
     const day = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(get('weekday'));
     return { day, minutes: (Number(get('hour')) % 24) * 60 + Number(get('minute')) };
   };
-  const toMin = (t) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+  const toMin = (t) => { const [h, m] = t.replace(/[^\d:]/g, '').split(':').map(Number); return h * 60 + m; };
   const fmt = (t) => t.replace(':', '.');
   const buildHours = () => {
     const body = $('#hoursTable tbody');
@@ -654,7 +747,8 @@
         let next = null;
         if (today && minutes < toMin(today[0])) next = { d: 0, t: today[0] };
         for (let i = 1; i <= 7 && !next; i++) { const h = CONFIG.hours[(day + i) % 7]; if (h) next = { d: i, t: h[0] }; }
-        text = next ? `Tutup sekarang. Buka lagi ${next.d === 0 ? 'hari ini' : next.d === 1 ? 'besok' : DAY_NAMES[(day + next.d) % 7]} pukul ${fmt(next.t)}.` : 'Tutup sekarang.';
+        const when = next ? (next.d === 0 ? 'hari ini' : next.d === 1 ? 'besok' : DAY_NAMES[(day + next.d) % 7]) : '';
+        text = next ? `Hari ini kami sedang tutup, Buka kembali ${when} pukul ${fmt(next.t)}.` : 'Hari ini kami sedang tutup.';
       }
       status.classList.toggle('is-open', isOpen);
       status.querySelector('span').textContent = text;
@@ -689,14 +783,25 @@
     fabSync();
   };
 
-  buildGaya();
+  // Bagian berat (galeri 24 karya, carousel, slider 3D, halaman semua layanan) dibangun
+  // saat mendekati viewport. Ini menjaga DOM awal & main thread tetap ringan.
+  const whenNear = (selector, fn, rootMargin = '700px 0px') => {
+    const el = $(selector);
+    if (!el) return;
+    if (!('IntersectionObserver' in window)) { setTimeout(fn, 180); return; }
+    const io = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) { io.disconnect(); fn(); }
+    }, { rootMargin });
+    io.observe(el);
+  };
+
   buildHours();
   fillContact();
   setupFab();
   refreshBookingLinks();
-
-  buildServicePage();
-  window.__svx = initServiceSlider();
+  whenNear('#layanan', ensureSlider, '900px 0px');
+  whenNear('#gaya', ensureGaya);
+  whenNear('#galeri', ensureCarousel);
   fixPhotos();
   window.addEventListener('load', fixPhotos);
 
@@ -839,8 +944,13 @@
   initNav();
 
   const init = async () => {
-    const loadDone = document.readyState === 'complete' ? Promise.resolve() : new Promise((r) => window.addEventListener('load', r, { once: true }));
-    await Promise.race([Promise.all([loadDone, document.fonts?.ready ?? Promise.resolve()]), new Promise((r) => setTimeout(r, 7000))]);
+    // Cukup tunggu DOM siap, bukan semua gambar. Font diberi batas 700 ms agar loader tidak menggantung.
+    const domReady = document.readyState === 'loading'
+      ? new Promise((r) => document.addEventListener('DOMContentLoaded', r, { once: true }))
+      : Promise.resolve();
+    await domReady;
+    // Tidak perlu menunggu font: judul hero tidak lagi dipecah saat boot,
+    // dan @font-face memakai font-display: swap.
     try { startMotion(); } catch (err) { console.error(err); revealFallback(); }
     await boot.finish();
     await exitBoot();
@@ -873,37 +983,69 @@
 
     const ctx = gsap.context(() => {
       const introTl = gsap.timeline({ paused: true });
-      const heroTitle = new SplitText('.hero-title', { type: 'lines,words', linesClass: 'split-line' });
+      // Judul hero sengaja tidak diberi animasi transform/opacity: teks terbesar
+      // (LCP) harus sudah final begitu loader dibuka agar LCP tidak tertunda.
       introTl
-        .from(heroTitle.lines, { yPercent: 110, opacity: 0, duration: .65, stagger: .08, ease: 'power3.out' }, 0)
         .from('.hero-eyebrow', { opacity: 0, y: 18, duration: .6, ease: 'power3.out' }, .08)
         .from('.hero-bottomline', { opacity: 0, y: 22, duration: .7, ease: 'power3.out' }, .24)
         .fromTo('.hero-card', { opacity: 0, y: 30, scale: .98 }, { opacity: 1, y: 0, scale: 1, duration: .7, stagger: .1, ease: 'power3.out', onComplete: function () { gsap.set('.hero-card', { clearProps: 'all' }); document.querySelectorAll('.hero-card').forEach((c) => c.classList.remove('reveal')); } }, .36);
       setupNavScroll(introTl);
       window.__playIntro = () => introTl.play();
 
+      // Pecah judul section hanya saat mendekati viewport, bukan saat boot,
+      // supaya pekerjaan layout di awal tetap ringan.
       gsap.utils.toArray('.split-title').forEach((heading) => {
-        const split = new SplitText(heading, { type: 'lines,words', linesClass: 'split-line' });
-        gsap.from(split.lines, {
-          yPercent: 105,
-          opacity: 0,
-          duration: .6,
-          stagger: .07,
-          ease: 'power3.out',
-          scrollTrigger: { trigger: heading, start: 'top 82%', once: true }
-        });
+        let played = false;
+        const animate = () => {
+          if (played) return;
+          played = true;
+          const split = new SplitText(heading, { type: 'lines,words', linesClass: 'split-line' });
+          gsap.from(split.lines, {
+            yPercent: 105,
+            opacity: 0,
+            duration: .6,
+            stagger: .07,
+            ease: 'power3.out',
+          });
+        };
+        if (!('IntersectionObserver' in window)) { animate(); return; }
+        const io = new IntersectionObserver((entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          io.disconnect();
+          animate();
+        }, { rootMargin: '320px 0px' });
+        io.observe(heading);
       });
 
-      gsap.utils.toArray('.reveal:not(.hero-card)').forEach((item) => {
-        gsap.fromTo(item, { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: .65, ease: 'power3.out', scrollTrigger: { trigger: item, start: 'top 84%', once: true }, onComplete: () => { gsap.set(item, { clearProps: 'all' }); item.classList.remove('reveal'); } });
-      });
+      // Elemen .reveal juga baru dianimasikan saat mendekati viewport.
+      const revealItems = gsap.utils.toArray('.reveal:not(.hero-card)');
+      const showReveal = (item) => {
+        gsap.fromTo(item, { opacity: 0, y: 28 }, { opacity: 1, y: 0, duration: .65, ease: 'power3.out', onComplete: () => { gsap.set(item, { clearProps: 'all' }); item.classList.remove('reveal'); } });
+      };
+      if ('IntersectionObserver' in window) {
+        const revealIO = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            revealIO.unobserve(entry.target);
+            showReveal(entry.target);
+          });
+        }, { rootMargin: '0px 0px -6% 0px' });
+        revealItems.forEach((item) => revealIO.observe(item));
+      } else {
+        revealItems.forEach(showReveal);
+      }
+    }, document.body);
+
+    // Efek scroll (parallax, draw SVG, counter, clip-path) tidak dibutuhkan
+    // untuk paint pertama. Jalankan saat browser idle supaya LCP/TBT awal ringan.
+    const initScrollEffects = () => ctx.add(() => {
+      setupServiceFlip();
 
       gsap.utils.toArray('.draw-line path').forEach((path) => {
         gsap.from(path, { drawSVG: '0%', duration: .7, ease: 'power2.out', scrollTrigger: { trigger: path, start: 'top 88%', once: true } });
       });
 
       ScrollTrigger.create({ trigger: '.stats-grid', start: 'top 78%', once: true, onEnter: animateCounts });
-      setupServiceFlip();
 
       // layered parallax on hero gallery + about visual
       const heroDepths = [16, 26, 13, 22];
@@ -931,11 +1073,12 @@
           scrollTrigger: { trigger: frame, start: 'top 85%', once: true }
         });
       });
-      setupGalleryCarousel();
-
       Observer.create({ target: window, type: 'wheel,touch,scroll', onChangeY: ({ deltaY }) => { if (Math.abs(deltaY) > 1) setScrolled(window.scrollY > 24); } });
       Observer.create({ target: '.hero-gallery', type: 'pointer,touch', onPress: () => document.querySelector('.hero-gallery')?.classList.add('is-touching'), onRelease: () => document.querySelector('.hero-gallery')?.classList.remove('is-touching') });
-    }, document.body);
+    });
+
+    if ('requestIdleCallback' in window) requestIdleCallback(initScrollEffects, { timeout: 1200 });
+    else setTimeout(initScrollEffects, 300);
 
     window.addEventListener('pagehide', () => { lenis?.destroy(); ctx.revert(); }, { once: true });
   };

@@ -1,6 +1,6 @@
 # Panduan Foto Layanan
 
-Taruh foto di folder ini dengan **nama file persis** seperti tabel di bawah (huruf kecil, format `.jpg`). Tidak perlu mengubah kode.
+Taruh foto di folder ini dengan **nama file persis** seperti tabel di bawah (huruf kecil, format `.jpg`). Setelah file diunggah, tambahkan slug layanannya (nama file tanpa .jpg) ke daftar `SERVICE_PHOTOS` di `src/main.js`. Foto karya galeri diatur di `src/works-data.js`.
 Kalau file belum ada, kartu layanan menampilkan pelat monogram yang rapi, jadi website tetap tampak utuh.
 
 **Spesifikasi:** potret rasio 4:5 (contoh 1000×1250 px), JPG, usahakan di bawah 300 KB (kompres dulu di squoosh.app). Wajah/rambut di tengah, karena kartu dipotong otomatis.
@@ -85,4 +85,12 @@ Catatan: `Pixie_Cut.jpeg` aslinya tangkapan layar Instagram yang miring. Sudah d
 
 Hero, slider layanan, dan daftar "Semua Layanan" memakai foto salon di folder `gaya/` sebagai cadangan sementara. Begitu kamu menaruh file `<nama-layanan>.jpg` di folder ini (lihat tabel di atas), foto itu otomatis menggantikannya.
 
-Layanan yang tidak punya cadangan yang cocok (Potong Pria, Potong Anak, Perm Akar, Cold Perm, Hairmask, Treatment Komplit, Hair Detox) tetap menampilkan pelat monogram sampai fotonya ditambahkan. Pemetaan cadangan ada di `src/main.js` (cari `SVC_FB`).
+Layanan yang tidak punya cadangan yang cocok (Potong Anak, Perm Akar, Cold Perm, Hairmask, Treatment Komplit, Hair Detox) tetap menampilkan pelat monogram sampai fotonya ditambahkan. Pemetaan cadangan ada di `src/main.js` (cari `SVC_FB`).
+Potong Pria dan Potong Pria + Cuci + Blow memakai foto `assets/foto/gaya/potong-pria.jpeg`.
+
+## Varian gambar responsif
+
+Setiap foto di `assets/foto/gaya/` sudah punya varian **AVIF** dan **WebP** di `assets/foto/gaya/opt/` dengan lebar 480, 720, dan 960 px. Markup hero dan `pictureTag()` di `src/main.js` otomatis memilih AVIF → WebP → JPEG, jadi browser lama tetap aman.
+
+Kalau menambah atau mengganti foto, buat ulang variannya dengan nama `<nama-file>-<lebar>.avif` dan `<nama-file>-<lebar>.webp` (contoh: `pixie-cut-480.avif`). Bisa pakai [Squoosh](https://squoosh.app/) atau ImageMagick, lalu simpan di `opt/`. Tanpa varian itu, foto tetap tampil memakai JPEG asli, hanya lebih berat.
+
